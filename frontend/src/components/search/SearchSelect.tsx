@@ -162,6 +162,11 @@ const SearchSelect: React.FunctionComponent = () =>
     navigate(``);
   };
 
+  const onSearchClear = () =>
+  {
+    searchStore.search('');
+  };
+
   const options: Option[] = searchStore.filtered.map((item) =>
   {
     return {
@@ -181,6 +186,7 @@ const SearchSelect: React.FunctionComponent = () =>
       filterOption={false}
       onSelect={onSelect}
       onClear={onClear}
+      onFocus={onSearchClear}
     />
   );
 };

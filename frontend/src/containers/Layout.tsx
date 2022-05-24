@@ -11,7 +11,7 @@ const Layout: React.FunctionComponent<LayoutProps> = (props) =>
 {
   return (
     <div className={'root-89ED'}>
-      <Typography.Title underline={true}>Center Matrix Engine</Typography.Title>
+      <Typography.Title underline={true} className={"gradient"}>Center Matrix Engine</Typography.Title>
       {props.children}
     </div>
   );
