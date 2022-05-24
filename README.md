@@ -1,3 +1,6 @@
+# Timelog
+- Start 1630
+
 # Code Challenge
 
 
