@@ -1,5 +1,5 @@
 import React from 'react';
-import {Item} from '../containers/Search';
+import {Item} from './SearchSelect';
 
 interface SearchLabelProps
 {
@@ -11,8 +11,9 @@ const SearchLabel: React.FunctionComponent<SearchLabelProps> = (props) =>
 
   return (
     <div>
-      <b> {props.item.company_name} {props.item.branch} </b> <br />
-      {props.item.place} {props.item.zip} {props.item.phone}
+      <b>{props.item.center_name} ({props.item.branch}) </b> <br />
+      {props.item.street} {props.item.zip} {props.item.place}  <br />
+      {props.item.phone}
     </div>
   );
 };

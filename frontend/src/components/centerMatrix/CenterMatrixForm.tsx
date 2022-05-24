@@ -1,21 +1,16 @@
 import React, {useContext, useEffect} from 'react';
 import {CenterMatrixContext} from '../hocs/CenterMatrixContextProvider';
 import {observer} from 'mobx-react-lite';
-import {Button, Card, Divider, Form, Input, notification, Popconfirm} from 'antd';
+import {Button, Card, Divider, Form, Input, Popconfirm} from 'antd';
 import './centerMatrixForm.sass';
-import {searchStore, Status} from '../../containers/Search';
-import CenterMatrixDelete from './CenterMatrixDelete'; // -4CC1 -E070 -A6D3 -0DFD
+import CenterMatrixDelete from './CenterMatrixDelete';
+import CenterMatrixSave from './CenterMatrixSave';
+import {Status} from '../search/SearchSelect'; // -4CC1 -E070 -A6D3 -0DFD
+import {PhoneOutlined} from '@ant-design/icons';
 
-interface CenterMatrixFormProps
+const CenterMatrixForm: React.FunctionComponent = () =>
 {
-
-}
-
-const CenterMatrixForm: React.FunctionComponent<CenterMatrixFormProps> = (props) =>
-{
-
   const context = useContext(CenterMatrixContext);
-
   const form = Form.useForm()[0];
 
   useEffect(() =>
@@ -40,57 +35,79 @@ const CenterMatrixForm: React.FunctionComponent<CenterMatrixFormProps> = (props)
         labelCol={{span: 4}}
       >
 
-        <Divider className={'noMargingTop-4CC1'}> Firma </Divider>
+        <Divider className={'noMargingTop-4CC1'}> {context.data.center_name || 'Neues Center'} </Divider>
 
         <Form.Item
           label='Firma'
           name={'company_name'}
         >
-          <Input placeholder='Firma...' disabled={disabled}/>
+          <Input
+            placeholder='Firma...'
+            disabled={disabled}
+          />
         </Form.Item>
 
         <Form.Item
           label='Zweig'
           name={'branch'}
         >
-          <Input placeholder='Zweig...' disabled={disabled} />
+          <Input
+            placeholder='Zweig...'
+            disabled={disabled}
+          />
         </Form.Item>
 
         <Form.Item
           label='Center'
           name={'center_name'}
         >
-          <Input placeholder='Center...' disabled={disabled}/>
+          <Input
+            placeholder='Center...'
+            disabled={disabled}
+          />
         </Form.Item>
 
         <Divider orientation={'left'}> Kontakt </Divider>
 
         <Form.Item
-          label='Ort'
-          name={'place'}
-        >
-          <Input placeholder='Ort...' disabled={disabled}/>
-        </Form.Item>
-
-        <Form.Item
           label='Straße'
           name={'street'}
         >
-          <Input placeholder='Straße...' disabled={disabled}/>
+          <Input
+            placeholder='Straße...'
+            disabled={disabled}
+          />
         </Form.Item>
 
         <Form.Item
           label='Postleitzahl'
           name={'zip'}
         >
-          <Input placeholder='Postleitzahl...' disabled={disabled}/>
+          <Input
+            placeholder='Postleitzahl...'
+            disabled={disabled}
+          />
+        </Form.Item>
+
+        <Form.Item
+          label='Ort'
+          name={'place'}
+        >
+          <Input
+            placeholder='Ort...'
+            disabled={disabled}
+          />
         </Form.Item>
 
         <Form.Item
           label='Telefon'
           name={'phone'}
         >
-          <Input placeholder='Telefone...' disabled={disabled}/>
+          <Input
+            placeholder='Telefon...'
+            disabled={disabled}
+            addonAfter={<PhoneOutlined />}
+          />
         </Form.Item>
 
         <Divider orientation={'left'}> Misc. </Divider>
@@ -152,15 +169,13 @@ const CenterMatrixForm: React.FunctionComponent<CenterMatrixFormProps> = (props)
             </Popconfirm>
           </Form.Item>
 
-          <CenterMatrixDelete disabled={disabled}/>
+          <CenterMatrixDelete disabled={disabled} />
 
-          <Form.Item>
-            <Button type='primary' disabled={disabled} key={context.id}>
-              Speichern
-            </Button>
-          </Form.Item>
+          <CenterMatrixSave
+            disabled={disabled}
+            form={form}
+          />
         </Form>
-
       </Form>
     </Card>
   );

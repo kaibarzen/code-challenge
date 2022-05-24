@@ -4,10 +4,10 @@ import 'antd/dist/antd.dark.css';
 import './index.sass';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import Layout from './containers/Layout';
-import Search from './containers/Search';
 import CenterMatrixContextProvider from './components/hocs/CenterMatrixContextProvider';
 import CenterMatrixForm from './components/centerMatrix/CenterMatrixForm';
 import CenterMatrixBarrier from './components/centerMatrix/CenterMatrixBarrier';
+import SearchBar from './components/search/SearchBar';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -17,8 +17,18 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Layout>
-        <Search />
+        <SearchBar />
         <Routes>
+          <Route
+            path={'/center-matrix/new'}
+            element={
+              <CenterMatrixContextProvider>
+                <CenterMatrixBarrier>
+                  <CenterMatrixForm />
+                </CenterMatrixBarrier>
+              </CenterMatrixContextProvider>
+            }
+          />
           <Route
             element={
               <CenterMatrixContextProvider>
@@ -28,10 +38,6 @@ root.render(
               </CenterMatrixContextProvider>
             }
             path={'/center-matrix/:id'}
-          />
-          <Route
-            element={<div>create new</div>}
-            path={'/center-matrix'}
           />
         </Routes>
       </Layout>

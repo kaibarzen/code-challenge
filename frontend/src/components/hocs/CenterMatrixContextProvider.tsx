@@ -1,7 +1,8 @@
 import React, {ReactNode, useEffect, useState} from 'react';
-import {Item, Status} from '../../containers/Search';
 import {makeAutoObservable} from 'mobx';
 import {useParams} from 'react-router-dom';
+import {Status} from '../search/SearchSelect';
+import config from '../../config';
 
 interface CenterMatrixContextProps
 {
@@ -46,28 +47,33 @@ class CenterMatrixStore
     if (id)
     {
       this.loadData();
+      return;
     }
+    this.state = Status.Success;
   }
 
   async loadData()
   {
-    try
+    setTimeout(async () =>
     {
-      const res = await fetch(`http://localhost:3400/api/center-matrix/${this.id}`); // TODO fix cors // TODO config file
-      const body = await res.json();
-      if (!res.ok)
+      try
       {
-        throw new Error();
-      }
-      this.data = body;
-      this.state = Status.Success;
+        const res = await fetch(`${config.endpoint}${this.id}`);
+        const body = await res.json();
+        if (!res.ok)
+        {
+          throw new Error();
+        }
+        this.data = body;
+        this.state = Status.Success;
 
-    }
-    catch (e: any)
-    {
-      this.state = Status.Error;
-      this.error = 'Network Request Failed! :(';
-    }
+      }
+      catch (e: any)
+      {
+        this.state = Status.Error;
+        this.error = 'Network Request Failed! :(';
+      }
+    }, config.waitTime);
   }
 
 }
@@ -81,7 +87,6 @@ const CenterMatrixContextProvider: React.FunctionComponent<CenterMatrixContextPr
 
   useEffect(() =>
   {
-    console.log('ROUTE', params.id);
     if (params.id)
     {
       setStore(new CenterMatrixStore(Number.parseInt(params.id)));

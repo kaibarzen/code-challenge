@@ -1,7 +1,8 @@
 import React, {ReactNode, useContext} from 'react';
 import {CenterMatrixContext} from '../hocs/CenterMatrixContextProvider';
-import {Status} from '../../containers/Search';
 import {observer} from 'mobx-react-lite';
+import {Status} from '../search/SearchSelect';
+import {Alert, Spin} from 'antd';
 
 interface CenterMatrixBarrierProps
 {
@@ -15,9 +16,17 @@ const CenterMatrixBarrier: React.FunctionComponent<CenterMatrixBarrierProps> = (
   switch (context.state)
   {
     case Status.Error:
-      return <div> ERROR </div>;
+      return (
+        <div style={{padding: 16}}>
+          <Alert
+            message={'Daten konnten nicht geladen werden!'}
+            description={'Überprüfen Sie Ihre Internetverbindung!'}
+            type={'error'}
+          />
+        </div>
+      );
     case Status.Loading:
-      return <div> LOADING </div>;
+      return <Spin tip={'Wird Geladen....'}> {props.children}</Spin>;
     default:
       return (
         <div>

@@ -1,7 +1,9 @@
 import React, {useContext} from 'react';
 import {Button, Form, notification, Popconfirm} from 'antd';
-import {searchStore, Status} from '../../containers/Search';
 import {CenterMatrixContext} from '../hocs/CenterMatrixContextProvider';
+import {useNavigate} from 'react-router-dom';
+import {searchStore, Status} from '../search/SearchSelect';
+import config from '../../config';
 
 interface CenterMatrixDeleteProps
 {
@@ -11,6 +13,7 @@ interface CenterMatrixDeleteProps
 const CenterMatrixDelete: React.FunctionComponent<CenterMatrixDeleteProps> = (props) =>
 {
   const context = useContext(CenterMatrixContext);
+  const navigate = useNavigate();
 
   const onDelete = async () =>
   {
@@ -30,13 +33,15 @@ const CenterMatrixDelete: React.FunctionComponent<CenterMatrixDeleteProps> = (pr
 
       try
       {
-        const res = await fetch(`http://localhost:3400/api/center-matrix/${context.id}`, {method: 'delete'}); // TODO fix cors // TODO config file
+        const res = await fetch(`${config.endpoint}${context.id}`, {method: 'delete'});
         if (!res.ok)
         {
           throw new Error('NETWORK ERROR STATUS CODE HIER EINFÜGEN');
         }
 
         searchStore.deleteItem(context.id);
+        navigate('/');
+
       }
       catch (error: any)
       {
@@ -46,7 +51,7 @@ const CenterMatrixDelete: React.FunctionComponent<CenterMatrixDeleteProps> = (pr
           description: 'Sinnvolle Error Description',
         });
       }
-    }, 2000); // TODO CONFIG FILE
+    }, config.waitTime);
   };
 
   return (
@@ -62,6 +67,7 @@ const CenterMatrixDelete: React.FunctionComponent<CenterMatrixDeleteProps> = (pr
         onConfirm={onDelete}
         okText='OK'
         cancelText='Abbrechen'
+        disabled={!context.id || props.disabled}
       >
         <Button
           type='primary'

@@ -1,14 +1,10 @@
-import React, {ReactNode, useEffect, useState} from 'react';
+import React, {ReactNode} from 'react';
+import {useNavigate} from 'react-router-dom';
+import SearchLabel from './SearchLabel';
+import {Select, Spin} from 'antd';
 import {makeAutoObservable} from 'mobx';
 import {observer} from 'mobx-react-lite';
-import {Select} from 'antd';
-import SearchLabel from '../components/SearchLabel';
-import {useNavigate} from 'react-router-dom';
-
-interface SearchProps
-{
-
-}
+import config from '../../config';
 
 export enum Status
 {
@@ -68,30 +64,33 @@ class Store
 
   private async fetchData(silent?: boolean)
   {
-    try
+    setTimeout(async () =>
     {
-      const res = await fetch('http://localhost:3400/api/center-matrix'); // TODO fix cors // TODO config file
-      const body = await res.json();
-      if (!res.ok)
+      try
       {
-        throw new Error();
-      }
-      this.data = body;
-      this.search('');
-      if (!silent)
-      {
-        this.state = Status.Success;
-      }
+        const res = await fetch(config.endpoint);
+        const body = await res.json();
+        if (!res.ok)
+        {
+          throw new Error();
+        }
+        this.data = body;
+        this.search('');
+        if (!silent)
+        {
+          this.state = Status.Success;
+        }
 
-    }
-    catch (e: any)
-    {
-      if (!silent)
-      {
-        this.state = Status.Error;
-        this.error = 'Network Request Failed! :(';
       }
-    }
+      catch (e: any)
+      {
+        if (!silent)
+        {
+          this.state = Status.Error;
+          this.error = 'Network Request Failed! :(';
+        }
+      }
+    }, config.waitTime);
   }
 
   public deleteItem(id: number)
@@ -101,6 +100,16 @@ class Store
       return item.id !== id;
     });
     this.data = filtered;
+  }
+
+  public modifyItem(item: Item)
+  {
+    //TODO
+  }
+
+  public addItem(item: Item)
+  {
+    this.data.push(item);
   }
 }
 
@@ -112,7 +121,7 @@ interface Option
 
 export const searchStore = new Store();
 
-const Search: React.FunctionComponent<SearchProps> = (props) =>
+const SearchSelect: React.FunctionComponent = () =>
 {
 
   const navigate = useNavigate();
@@ -120,18 +129,26 @@ const Search: React.FunctionComponent<SearchProps> = (props) =>
   if (searchStore.state === Status.Loading)
   {
     return (
-      <div>
-        Loading
-      </div>
+      <Select
+        showSearch={true}
+        placeholder={'Wird geladen...'}
+        style={{width: 400}}
+        allowClear={true}
+        disabled={true}
+      />
     );
   }
 
   if (searchStore.state === Status.Error)
   {
     return (
-      <div>
-        Error {searchStore.error}
-      </div>
+      <Select
+        showSearch={true}
+        placeholder={'Konnte nicht geladen werden! :('}
+        style={{width: 400}}
+        allowClear={true}
+        disabled={true}
+      />
     );
   }
 
@@ -154,20 +171,18 @@ const Search: React.FunctionComponent<SearchProps> = (props) =>
   });
 
   return (
-    <div>
-      <Select
-        showSearch={true}
-        onSearch={searchStore.search.bind(searchStore)}
-        placeholder={'Ich Suche...'}
-        style={{width: 400}}
-        allowClear={true}
-        options={options}
-        filterOption={false}
-        onSelect={onSelect}
-        onClear={onClear}
-      />
-    </div>
+    <Select
+      showSearch={true}
+      onSearch={searchStore.search.bind(searchStore)}
+      placeholder={'Ich Suche...'}
+      style={{width: 400}}
+      allowClear={true}
+      options={options}
+      filterOption={false}
+      onSelect={onSelect}
+      onClear={onClear}
+    />
   );
 };
 
-export default observer(Search);
+export default observer(SearchSelect);
